@@ -28,6 +28,10 @@
         android:title="Apps filter"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_settings"
+        android:title="Settings"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_donate"
         android:title="Donate"
         app:showAsAction="never" />

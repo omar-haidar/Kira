@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     // Handle Shizuku permission results
     private final Shizuku.OnRequestPermissionResultListener shizukuPermissionListener = (requestCode, grantResult) -> {
         if (grantResult == PackageManager.PERMISSION_GRANTED) {
+            shellManager.bindShizukuService();
             loadBackgroundApps();
         }
     };
@@ -123,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
                 AppModel clickedApp = appsDataList.get(position);
                 if (clickedApp.isProtected()) {
                     return;
-                }                
+                }
                 clickedApp.setSelected(!clickedApp.isSelected());
                 listAdapter.notifyDataSetChanged();
-                updateSelectMenuVisibility(); 
+                updateSelectMenuVisibility();
             }
         });
     }
@@ -256,7 +257,10 @@ public class MainActivity extends AppCompatActivity {
             loadBackgroundApps();
             return true;
         } else if (itemId == R.id.action_apps_filter) {
-            showFilterDialog(); 
+            showFilterDialog();
+            return true;
+        } else if (itemId == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         } else if (itemId == R.id.action_donate) {
             openUrl("https://www.paypal.com/ncp/payment/7X44EWSM9KAVW");
@@ -321,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         // Clean up resources
         shellManager.removeShizukuPermissionListener();
+        shellManager.unbindShizukuService();
         executor.shutdownNow();
         handler.removeCallbacksAndMessages(null);
         ramMonitor.stopMonitoring();

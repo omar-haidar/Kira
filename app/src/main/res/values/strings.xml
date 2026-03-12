@@ -1,3 +1,12 @@
 <resources>
 	<string name="app_name" translatable="false">Shappky</string>
+	
+	<!-- Settings -->
+	<string name="settings">Settings</string>
+	<string name="show_system_apps">Show system apps</string>
+	<string name="show_system_apps_summary">Display system applications in the list</string>
+	<string name="show_persistent_apps">Show persistent apps</string>
+	<string name="show_persistent_apps_summary">Display persistent applications in the list</string>
+	<string name="auto_refresh">Auto refresh</string>
+	<string name="auto_refresh_summary">Automatically refresh the app list</string>
 </resources>
