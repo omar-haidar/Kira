@@ -23,6 +23,10 @@ import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREFERENCES_NAME = "AppPreferences";
     private static final String KEY_SHOW_SYSTEM_APPS = "showSystemApps";
     private static final String KEY_SHOW_PERSISTENT_APPS = "showPersistentApps";
+    private static final String KEY_FULL_SCREEN = "fullScreen";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private ShellManager shellManager; 
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private final List<AppModel> appsDataList = new ArrayList<>();
     private MenuItem selectAllItem;
     private MenuItem unselectAllItem;
+    private int baseToolbarHeight = -1;
     
     // Handle Shizuku permission results
     private final Shizuku.OnRequestPermissionResultListener shizukuPermissionListener = (requestCode, grantResult) -> {
@@ -88,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
         // Setup toolbar
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitleTextColor(Color.WHITE);
-        getWindow().getDecorView().setBackgroundColor(Color.parseColor("#17181C"));
+        getWindow().getDecorView().setBackgroundColor(
+                ContextCompat.getColor(this, R.color.colorPrimary)
+        );
 
         // Initialize components
         shellManager = new ShellManager(this, handler, executor);
@@ -104,8 +112,10 @@ public class MainActivity extends AppCompatActivity {
        sharedpreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
        boolean showSystemApps = sharedpreferences.getBoolean(KEY_SHOW_SYSTEM_APPS, false);
        boolean showPersistentApps = sharedpreferences.getBoolean(KEY_SHOW_PERSISTENT_APPS, false);
-       appManager.setShowSystemApps(showSystemApps);
+        appManager.setShowSystemApps(showSystemApps);
        appManager.setShowPersistentApps(showPersistentApps);
+
+        applySystemBars();
        
         // Initialize Shizuku and load apps
         shellManager.setShizukuPermissionListener(shizukuPermissionListener);
@@ -330,5 +340,51 @@ public class MainActivity extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
         ramMonitor.stopMonitoring();
         binding = null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        applySystemBars();
+    }
+
+    private void applySystemBars() {
+        boolean fullScreen = sharedpreferences.getBoolean(KEY_FULL_SCREEN, false);
+        int systemBarColor = ContextCompat.getColor(this, R.color.colorPrimary);
+        getWindow().setStatusBarColor(systemBarColor);
+        getWindow().setNavigationBarColor(systemBarColor);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), !fullScreen);
+        WindowInsetsControllerCompat controller =
+                new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+        if (fullScreen) {
+            controller.hide(WindowInsetsCompat.Type.statusBars());
+            controller.setSystemBarsBehavior(
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        } else {
+            controller.show(WindowInsetsCompat.Type.statusBars());
+        }
+
+        applyToolbarInsets(fullScreen);
+    }
+
+    private void applyToolbarInsets(boolean fullScreen) {
+        if (binding == null || binding.toolbar == null) {
+            return;
+        }
+        if (baseToolbarHeight <= 0) {
+            baseToolbarHeight = binding.toolbar.getLayoutParams().height;
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar, (view, insets) -> {
+            int topInset = fullScreen
+                    ? 0
+                    : insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            android.view.ViewGroup.LayoutParams lp = view.getLayoutParams();
+            lp.height = baseToolbarHeight + topInset;
+            view.setLayoutParams(lp);
+            view.setPadding(view.getPaddingLeft(), topInset, view.getPaddingRight(), view.getPaddingBottom());
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(binding.toolbar);
     }
 }

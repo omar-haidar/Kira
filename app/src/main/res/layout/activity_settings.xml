@@ -169,6 +169,50 @@
                     android:layout_height="1dp"
                     android:background="#2D2E32" />
 
+                <!-- Full Screen -->
+                <LinearLayout
+                    android:id="@+id/settings_full_screen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#17181C"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/title_full_screen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Full screen"
+                            android:textColor="#ECEFF1"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/summary_full_screen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hide the status bar and use the full screen"
+                            android:textColor="#B0BEC5"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/switch_full_screen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#2D2E32" />
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
