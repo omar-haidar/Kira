@@ -8,5 +8,6 @@
     android:maxHeight="24dp"
     android:background="?attr/selectableItemBackgroundBorderless"
     android:scaleType="fitCenter"
+    android:tint="?attr/colorOnPrimary"
     android:src="@drawable/ic_unselect_all"
     android:padding="0dp" />

@@ -8,4 +8,16 @@
 	<color name="colorAccent">#0136FF</color>
 	<color name="colorControlHighlight">#0136FF</color>
 	<color name="colorControlNormal">#0136FF</color>
+	<color name="theme_dark_primary">#17181C</color>
+	<color name="theme_light_primary">#FFFFFF</color>
+	<color name="theme_black_primary">#000000</color>
+	<color name="theme_dark_on_primary">#FFFFFF</color>
+	<color name="theme_light_on_primary">#111111</color>
+	<color name="theme_black_on_primary">#FFFFFF</color>
+	<color name="theme_dark_surface">#17181C</color>
+	<color name="theme_light_surface">#FFFFFF</color>
+	<color name="theme_black_surface">#000000</color>
+	<color name="theme_dark_on_surface">#ECEFF1</color>
+	<color name="theme_light_on_surface">#111111</color>
+	<color name="theme_black_on_surface">#ECEFF1</color>
 </resources>

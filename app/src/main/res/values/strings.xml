@@ -9,4 +9,12 @@
 	<string name="show_persistent_apps_summary">Display persistent applications in the list</string>
 	<string name="auto_refresh">Auto refresh</string>
 	<string name="auto_refresh_summary">Automatically refresh the app list</string>
+	<string-array name="theme_options">
+		<item>Dark</item>
+		<item>White</item>
+		<item>Black</item>
+	</string-array>
+	<string name="theme">Theme</string>
+	<string name="theme_summary">Choose Dark, White, or Black</string>
+	<string name="theme_dialog_title">Choose theme</string>
 </resources>

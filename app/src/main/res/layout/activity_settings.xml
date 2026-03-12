@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="?attr/popupTheme" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -29,7 +29,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#17181C">
+            android:background="?attr/colorSurface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,7 +42,7 @@
                     android:id="@+id/settings_show_system"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#17181C"
+                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:gravity="center_vertical">
@@ -58,7 +58,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Show system apps"
-                            android:textColor="#ECEFF1"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp" />
 
                         <TextView
@@ -66,7 +66,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Display system applications in the list"
-                            android:textColor="#B0BEC5"
+                            android:textColor="?attr/colorOnSurface"
+                            android:alpha="0.7"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -79,14 +80,15 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2D2E32" />
+                    android:background="?attr/colorOnSurface"
+                    android:alpha="0.12" />
 
                 <!-- Show Persistent Apps -->
                 <LinearLayout
                     android:id="@+id/settings_show_persistent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#17181C"
+                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:gravity="center_vertical">
@@ -102,7 +104,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Show persistent apps"
-                            android:textColor="#ECEFF1"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp" />
 
                         <TextView
@@ -110,7 +112,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Display persistent applications in the list"
-                            android:textColor="#B0BEC5"
+                            android:textColor="?attr/colorOnSurface"
+                            android:alpha="0.7"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -123,14 +126,15 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2D2E32" />
+                    android:background="?attr/colorOnSurface"
+                    android:alpha="0.12" />
 
                 <!-- Auto Refresh -->
                 <LinearLayout
                     android:id="@+id/settings_auto_refresh"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#17181C"
+                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:gravity="center_vertical">
@@ -146,7 +150,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Auto refresh"
-                            android:textColor="#ECEFF1"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp" />
 
                         <TextView
@@ -154,7 +158,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Automatically refresh the app list"
-                            android:textColor="#B0BEC5"
+                            android:textColor="?attr/colorOnSurface"
+                            android:alpha="0.7"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -167,14 +172,15 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2D2E32" />
+                    android:background="?attr/colorOnSurface"
+                    android:alpha="0.12" />
 
                 <!-- Full Screen -->
                 <LinearLayout
                     android:id="@+id/settings_full_screen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#17181C"
+                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:gravity="center_vertical">
@@ -190,7 +196,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Full screen"
-                            android:textColor="#ECEFF1"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp" />
 
                         <TextView
@@ -198,7 +204,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Hide the status bar and use the full screen"
-                            android:textColor="#B0BEC5"
+                            android:textColor="?attr/colorOnSurface"
+                            android:alpha="0.7"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -211,7 +218,57 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2D2E32" />
+                    android:background="?attr/colorOnSurface"
+                    android:alpha="0.12" />
+
+                <!-- Theme -->
+                <LinearLayout
+                    android:id="@+id/settings_theme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorSurface"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/title_theme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/theme"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/summary_theme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/theme_summary"
+                            android:textColor="?attr/colorOnSurface"
+                            android:alpha="0.7"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/theme_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dark"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?attr/colorOnSurface"
+                    android:alpha="0.12" />
 
             </LinearLayout>
         </ScrollView>

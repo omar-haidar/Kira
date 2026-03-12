@@ -1,16 +1,49 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/theme_dark_primary</item>
+        <item name="colorPrimaryDark">@color/theme_dark_primary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorControlHighlight</item>
         <item name="colorControlNormal">@color/colorControlNormal</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item> 
+        <item name="colorOnPrimary">@color/theme_dark_on_primary</item>
+        <item name="colorSurface">@color/theme_dark_surface</item>
+        <item name="colorOnSurface">@color/theme_dark_on_surface</item>
+        <item name="android:navigationBarColor">@color/theme_dark_primary</item>
+        <item name="android:statusBarColor">@color/theme_dark_primary</item>
+        <item name="popupTheme">@style/AppTheme.PopupOverlay.Dark</item>
+    </style>
+    <style name="AppTheme_Dark" parent="AppTheme" />
+    <style name="AppTheme_Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/theme_light_primary</item>
+        <item name="colorPrimaryDark">@color/theme_light_primary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorControlHighlight</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
+        <item name="colorOnPrimary">@color/theme_light_on_primary</item>
+        <item name="colorSurface">@color/theme_light_surface</item>
+        <item name="colorOnSurface">@color/theme_light_on_surface</item>
+        <item name="android:navigationBarColor">@color/theme_light_primary</item>
+        <item name="android:statusBarColor">@color/theme_light_primary</item>
+        <item name="popupTheme">@style/AppTheme.PopupOverlay.Light</item>
+    </style>
+    <style name="AppTheme_Black" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/theme_black_primary</item>
+        <item name="colorPrimaryDark">@color/theme_black_primary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorControlHighlight</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
+        <item name="colorOnPrimary">@color/theme_black_on_primary</item>
+        <item name="colorSurface">@color/theme_black_surface</item>
+        <item name="colorOnSurface">@color/theme_black_on_surface</item>
+        <item name="android:navigationBarColor">@color/theme_black_primary</item>
+        <item name="android:statusBarColor">@color/theme_black_primary</item>
+        <item name="popupTheme">@style/AppTheme.PopupOverlay.Dark</item>
     </style>
     <style name="AppTheme.FullScreen" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark" />
+    <style name="AppTheme.PopupOverlay.Dark" parent="ThemeOverlay.MaterialComponents.Dark" />
+    <style name="AppTheme.PopupOverlay.Light" parent="ThemeOverlay.MaterialComponents.Light" />
 </resources>

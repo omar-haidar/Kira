@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#17181C">
+    android:background="?attr/colorSurface">
     <ProgressBar
         android:id="@+id/filter_loading_progress"
         android:layout_width="wrap_content"

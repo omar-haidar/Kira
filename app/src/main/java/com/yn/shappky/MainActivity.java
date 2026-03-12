@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.Color;
+import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -27,6 +28,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import android.graphics.drawable.Drawable;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_SHOW_SYSTEM_APPS = "showSystemApps";
     private static final String KEY_SHOW_PERSISTENT_APPS = "showPersistentApps";
     private static final String KEY_FULL_SCREEN = "fullScreen";
+    private static final String KEY_THEME = "appTheme";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private ShellManager shellManager; 
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem selectAllItem;
     private MenuItem unselectAllItem;
     private int baseToolbarHeight = -1;
+    private String currentTheme = "dark";
     
     // Handle Shizuku permission results
     private final Shizuku.OnRequestPermissionResultListener shizukuPermissionListener = (requestCode, grantResult) -> {
@@ -80,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        applyThemeFromPreferences();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -93,10 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup toolbar
         setSupportActionBar(binding.toolbar);
-        binding.toolbar.setTitleTextColor(Color.WHITE);
-        getWindow().getDecorView().setBackgroundColor(
-                ContextCompat.getColor(this, R.color.colorPrimary)
-        );
+        binding.toolbar.setTitleTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnPrimary));
+        getWindow().getDecorView().setBackgroundColor(resolveThemeColor(com.google.android.material.R.attr.colorPrimary));
 
         // Initialize components
         shellManager = new ShellManager(this, handler, executor);
@@ -109,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
         setupListeners();
         
         // Initialize SharedPreferences
-       sharedpreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        currentTheme = sharedpreferences.getString(KEY_THEME, "dark");
        boolean showSystemApps = sharedpreferences.getBoolean(KEY_SHOW_SYSTEM_APPS, false);
        boolean showPersistentApps = sharedpreferences.getBoolean(KEY_SHOW_PERSISTENT_APPS, false);
         appManager.setShowSystemApps(showSystemApps);
@@ -200,6 +205,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        Drawable overflow = binding.toolbar.getOverflowIcon();
+        if (overflow != null) {
+            DrawableCompat.setTint(overflow, resolveThemeColor(com.google.android.material.R.attr.colorOnPrimary));
+        }
         MenuItem showSystemItem = menu.findItem(R.id.action_show_system);
         if (showSystemItem != null) {
            boolean savedState = sharedpreferences.getBoolean(KEY_SHOW_SYSTEM_APPS, false);
@@ -345,12 +354,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        String themeNow = sharedpreferences.getString(KEY_THEME, "dark");
+        if (!themeNow.equals(currentTheme)) {
+            recreate();
+            return;
+        }
         applySystemBars();
     }
 
     private void applySystemBars() {
         boolean fullScreen = sharedpreferences.getBoolean(KEY_FULL_SCREEN, false);
-        int systemBarColor = ContextCompat.getColor(this, R.color.colorPrimary);
+        int systemBarColor = resolveThemeColor(com.google.android.material.R.attr.colorPrimary);
         getWindow().setStatusBarColor(systemBarColor);
         getWindow().setNavigationBarColor(systemBarColor);
 
@@ -366,6 +380,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         applyToolbarInsets(fullScreen);
+    }
+
+    private void applyThemeFromPreferences() {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String theme = prefs.getString(KEY_THEME, "dark");
+        if ("white".equals(theme)) {
+            setTheme(R.style.AppTheme_Light);
+        } else if ("black".equals(theme)) {
+            setTheme(R.style.AppTheme_Black);
+        } else {
+            setTheme(R.style.AppTheme_Dark);
+        }
+    }
+
+    private int resolveThemeColor(int attr) {
+        TypedValue value = new TypedValue();
+        getTheme().resolveAttribute(attr, value, true);
+        return value.data;
     }
 
     private void applyToolbarInsets(boolean fullScreen) {
