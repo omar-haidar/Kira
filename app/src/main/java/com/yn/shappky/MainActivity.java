@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        applyPendingFullScreenPreference();
         applyThemeFromPreferences();
         applyDynamicColorsFromPreferences();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -304,6 +305,8 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_filter, null);
         ListView listView = dialogView.findViewById(R.id.filter_list_view);
+        androidx.appcompat.widget.SearchView searchView = dialogView.findViewById(R.id.filter_search);
+        View loadingContainer = dialogView.findViewById(R.id.filter_loading_container);
         ProgressBar progressBar = dialogView.findViewById(R.id.filter_loading_progress);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
@@ -317,13 +320,46 @@ public class MainActivity extends AppCompatActivity {
             dialogBg = ContextCompat.getColor(this, R.color.theme_black_dialog_surface);
         }
         filterDialog.getWindow().setBackgroundDrawable(new ColorDrawable(dialogBg));
+        if (searchView != null) {
+            View searchPlate = searchView.findViewById(androidx.appcompat.R.id.search_plate);
+            if (searchPlate != null) {
+                searchPlate.setBackgroundColor(dialogBg);
+            }
+            View searchEdit = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+            if (searchEdit != null) {
+                searchEdit.setBackgroundColor(dialogBg);
+            }
+            View submitArea = searchView.findViewById(androidx.appcompat.R.id.submit_area);
+            if (submitArea != null) {
+                submitArea.setBackgroundColor(dialogBg);
+            }
+            View editFrame = searchView.findViewById(androidx.appcompat.R.id.search_edit_frame);
+            if (editFrame != null) {
+                editFrame.setBackgroundColor(dialogBg);
+            }
+            View searchButton = searchView.findViewById(androidx.appcompat.R.id.search_mag_icon);
+            if (searchButton != null) {
+                searchButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            }
+            View closeButton = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
+            if (closeButton != null) {
+                closeButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            }
+            searchView.setBackgroundColor(dialogBg);
+        }
 
         filterDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> dialog.dismiss());
         filterDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Save", (dialog, which) -> {});
 
+        if (loadingContainer != null) {
+            loadingContainer.setVisibility(View.VISIBLE);
+        }
         progressBar.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
         filterDialog.show();
+        if ("black".equals(theme)) {
+            listView.setBackgroundColor(dialogBg);
+        }
 
         int dialogTextColor = resolveThemeColor(com.google.android.material.R.attr.colorOnSurface);
         filterDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialogTextColor);
@@ -334,8 +370,26 @@ public class MainActivity extends AppCompatActivity {
             FilterAppsAdapter filterAdapter = new FilterAppsAdapter(this, allApps, hiddenApps);
             listView.setAdapter(filterAdapter);
             listView.setOnItemClickListener(null);
+            if (searchView != null) {
+                searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        filterAdapter.filter(query);
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        filterAdapter.filter(newText);
+                        return true;
+                    }
+                });
+            }
 
             progressBar.setVisibility(View.GONE);
+            if (loadingContainer != null) {
+                loadingContainer.setVisibility(View.GONE);
+            }
             listView.setVisibility(View.VISIBLE);
 
             filterDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Save", (dialog, which) -> {
@@ -430,6 +484,17 @@ public class MainActivity extends AppCompatActivity {
             if ("black".equals(prefs.getString(KEY_THEME, "dark"))) {
                 getTheme().applyStyle(R.style.AppTheme_Dynamic_Black_Override, true);
             }
+        }
+    }
+
+    private void applyPendingFullScreenPreference() {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        if (prefs.contains("fullScreenPending")) {
+            boolean pending = prefs.getBoolean("fullScreenPending", false);
+            prefs.edit()
+                    .putBoolean(KEY_FULL_SCREEN, pending)
+                    .remove("fullScreenPending")
+                    .apply();
         }
     }
 

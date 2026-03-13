@@ -25,4 +25,9 @@
 	<string name="permission_mode_root">Root</string>
 	<string name="permission_mode_shizuku">Shizuku</string>
 	<string name="permission_denied">Permission denied</string>
+	<string name="search_apps">Search apps</string>
+	<string name="restart_required_title">Restart required</string>
+	<string name="restart_required_message">Please restart the app to apply this change.</string>
+	<string name="restart_now">Restart</string>
+	<string name="restart_later">Later</string>
 </resources>

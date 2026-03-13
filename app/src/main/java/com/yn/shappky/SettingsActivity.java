@@ -2,6 +2,7 @@ package com.yn.shappky;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String KEY_THEME = "appTheme";
     private static final String KEY_DYNAMIC_COLORS = "dynamicColors";
     private static final String KEY_PERMISSION_MODE = "permissionMode";
+    private static final String KEY_FULLSCREEN_PENDING = "fullScreenPending";
     private Toolbar settingsToolbar;
     private int baseToolbarHeight = -1;
 
@@ -68,8 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
             R.id.summary_show_persistent, R.id.switch_show_persistent);
         setupSwitchItem(KEY_AUTO_REFRESH, R.id.settings_auto_refresh, R.id.title_auto_refresh,
             R.id.summary_auto_refresh, R.id.switch_auto_refresh);
-        setupSwitchItem(KEY_FULL_SCREEN, R.id.settings_full_screen, R.id.title_full_screen,
-            R.id.summary_full_screen, R.id.switch_full_screen);
+        setupFullScreenSwitch();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             setupSwitchItem(KEY_DYNAMIC_COLORS, R.id.settings_dynamic_colors, R.id.title_dynamic_colors,
                 R.id.summary_dynamic_colors, R.id.switch_dynamic_colors);
@@ -98,9 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
             switchView.setChecked(savedState);
             switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 sharedPreferences.edit().putBoolean(preferenceKey, isChecked).apply();
-                if (KEY_FULL_SCREEN.equals(preferenceKey)) {
-                    applySystemBars();
-                } else if (KEY_DYNAMIC_COLORS.equals(preferenceKey)) {
+                if (KEY_DYNAMIC_COLORS.equals(preferenceKey)) {
                     recreate();
                 }
             });
@@ -111,6 +110,53 @@ public class SettingsActivity extends AppCompatActivity {
                 switchView.setChecked(!switchView.isChecked());
             }
         });
+    }
+
+    private void setupFullScreenSwitch() {
+        View settingItem = findViewById(R.id.settings_full_screen);
+        CompoundButton switchView = findViewById(R.id.switch_full_screen);
+        if (settingItem == null || switchView == null) {
+            return;
+        }
+        boolean savedState = sharedPreferences.getBoolean(KEY_FULL_SCREEN, false);
+        switchView.setChecked(savedState);
+        switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            sharedPreferences.edit()
+                    .putBoolean(KEY_FULLSCREEN_PENDING, isChecked)
+                    .apply();
+            showRestartDialogForFullScreen();
+        });
+        settingItem.setOnClickListener(v -> switchView.toggle());
+    }
+
+    private void showRestartDialogForFullScreen() {
+        androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.restart_required_title)
+                .setMessage(R.string.restart_required_message)
+                .setPositiveButton(R.string.restart_now, (d, w) -> restartApp())
+                .setNegativeButton(R.string.restart_later, null)
+                .create();
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            int dialogBg = resolveThemeColor(com.google.android.material.R.attr.colorSurface);
+            String theme = sharedPreferences.getString(KEY_THEME, "dark");
+            if ("black".equals(theme)) {
+                dialogBg = ContextCompat.getColor(this, R.color.theme_black_dialog_surface);
+            }
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(dialogBg)
+            );
+        }
+    }
+
+    private void restartApp() {
+        Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        finish();
+        Runtime.getRuntime().exit(0);
     }
 
     @Override

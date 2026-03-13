@@ -8,3 +8,4 @@
 - Added a theme selector in Settings and added white/black themes.
 - Added a Dynamic colors toggle in Settings.
 - Added a Permission mode selector in Settings.
+- Added a Search bar in filter Dialog.

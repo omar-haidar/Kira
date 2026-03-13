@@ -21,6 +21,7 @@ import java.util.Set;
 public class FilterAppsAdapter extends BaseAdapter {
 
     private final List<AppModel> apps;
+    private final List<AppModel> allApps;
     private final LayoutInflater inflater;
 
     public FilterAppsAdapter(Context context, List<AppModel> apps, Set<String> hiddenApps) {
@@ -36,7 +37,8 @@ public class FilterAppsAdapter extends BaseAdapter {
             }
         });
 
-        this.apps = apps;
+        this.allApps = apps;
+        this.apps = new java.util.ArrayList<>(apps);
 
         for (AppModel app : apps) {
             if (hiddenApps.contains(app.getPackageName())) {
@@ -91,9 +93,25 @@ public class FilterAppsAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void filter(String query) {
+        String q = query == null ? "" : query.trim().toLowerCase();
+        apps.clear();
+        if (q.isEmpty()) {
+            apps.addAll(allApps);
+        } else {
+            for (AppModel app : allApps) {
+                String name = app.getAppName() == null ? "" : app.getAppName().toLowerCase();
+                if (name.contains(q)) {
+                    apps.add(app);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public Set<String> getSelectedPackages() {
         Set<String> selected = new HashSet<>();
-        for (AppModel app : apps) {
+        for (AppModel app : allApps) {
             if (app.isSelected()) {
                 selected.add(app.getPackageName());
             }

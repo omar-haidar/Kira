@@ -64,7 +64,7 @@
             <TextView
                 android:id="@+id/ram_usage_text"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_horizontal|center_vertical"
                 android:paddingLeft="5dp"
                 android:textColor="?attr/colorOnSurface"
@@ -82,10 +82,11 @@
                 style="?android:progressBarStyleHorizontal" />
         </LinearLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swiperefreshlayout1"
-        android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefreshlayout1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:background="?attr/colorSurface">
 
             <ListView
