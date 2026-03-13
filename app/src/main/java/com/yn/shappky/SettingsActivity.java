@@ -6,12 +6,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.util.TypedValue;
 import android.os.Build;
+import android.content.pm.PackageManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +22,8 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import com.google.android.material.color.DynamicColors;
+import com.topjohnwu.superuser.Shell;
+import rikka.shizuku.Shizuku;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -33,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String KEY_FULL_SCREEN = "fullScreen";
     private static final String KEY_THEME = "appTheme";
     private static final String KEY_DYNAMIC_COLORS = "dynamicColors";
+    private static final String KEY_PERMISSION_MODE = "permissionMode";
     private Toolbar settingsToolbar;
     private int baseToolbarHeight = -1;
 
@@ -75,6 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (dynamicRow != null) dynamicRow.setVisibility(View.GONE);
             if (dynamicDivider != null) dynamicDivider.setVisibility(View.GONE);
         }
+        setupPermissionModeDialog();
         setupThemeDialog();
 
         applySystemBars();
@@ -146,6 +151,77 @@ public class SettingsActivity extends AppCompatActivity {
                             sharedPreferences.edit().putString(KEY_THEME, newTheme).apply();
                             valueView.setText(options[which]);
                             recreate();
+                        }
+                        dlg.dismiss();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create();
+            dialog.show();
+            if (dialog.getWindow() != null) {
+                int dialogBg = resolveThemeColor(com.google.android.material.R.attr.colorSurface);
+                String theme = sharedPreferences.getString(KEY_THEME, "dark");
+                if ("black".equals(theme)) {
+                    dialogBg = ContextCompat.getColor(this, R.color.theme_black_dialog_surface);
+                }
+                dialog.getWindow().setBackgroundDrawable(
+                        new android.graphics.drawable.ColorDrawable(dialogBg)
+                );
+            }
+        });
+    }
+
+    private void setupPermissionModeDialog() {
+        View settingItem = findViewById(R.id.settings_permission_mode);
+        TextView valueView = findViewById(R.id.permission_mode_value);
+        if (settingItem == null || valueView == null) {
+            return;
+        }
+
+        String[] options = new String[] {
+                getString(R.string.permission_mode_shizuku),
+                getString(R.string.permission_mode_root)
+        };
+        String current = sharedPreferences.getString(KEY_PERMISSION_MODE, "shizuku");
+        valueView.setText("root".equals(current) ? options[1] : options[0]);
+
+        settingItem.setOnClickListener(v -> {
+            String currentMode = sharedPreferences.getString(KEY_PERMISSION_MODE, "shizuku");
+            int checked = "root".equals(currentMode) ? 1 : 0;
+            boolean shizukuAvailable = Shizuku.pingBinder()
+                    && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED;
+            boolean rootAvailable = Shell.getShell().isRoot();
+
+            boolean[] enabled = new boolean[] { shizukuAvailable, rootAvailable };
+            android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<String>(
+                    this, android.R.layout.simple_list_item_single_choice, options) {
+                @Override
+                public boolean isEnabled(int position) {
+                    return enabled[position];
+                }
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView text = view.findViewById(android.R.id.text1);
+                    if (text != null) {
+                        int base = resolveThemeColor(com.google.android.material.R.attr.colorOnSurface);
+                        int disabledColor = (base & 0x00FFFFFF) | 0x66000000;
+                        text.setTextColor(enabled[position] ? base : disabledColor);
+                    }
+                    return view;
+                }
+            };
+
+            androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(R.string.permission_mode_dialog_title)
+                    .setSingleChoiceItems(adapter, checked, (dlg, which) -> {
+                        if (!enabled[which]) {
+                            return;
+                        }
+                        String newMode = (which == 1) ? "root" : "shizuku";
+                        if (!newMode.equals(currentMode)) {
+                            sharedPreferences.edit().putString(KEY_PERMISSION_MODE, newMode).apply();
+                            valueView.setText(options[which]);
                         }
                         dlg.dismiss();
                     })

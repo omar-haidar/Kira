@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Shizuku and load apps
         shellManager.setShizukuPermissionListener(shizukuPermissionListener);
         shellManager.checkShellPermissions();
-        loadBackgroundApps();
+        updatePermissionUi();
         ramMonitor.startMonitoring();
     }
 
@@ -154,6 +154,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Load background apps
     private void loadBackgroundApps() {
+        if (!shellManager.hasAnyShellPermission()) {
+            updatePermissionUi();
+            return;
+        }
         binding.swiperefreshlayout1.setRefreshing(true);
         List<String> selectedPackages = appsDataList.stream()
                 .filter(AppModel::isSelected)
@@ -372,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         applySystemBars();
+        updatePermissionUi();
     }
 
     private void applySystemBars() {
@@ -452,6 +457,24 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         ViewCompat.requestApplyInsets(binding.toolbar);
+    }
+
+    private void updatePermissionUi() {
+        boolean hasPermission = shellManager.hasAnyShellPermission();
+        if (hasPermission) {
+            binding.permissionDeniedContainer.setVisibility(View.GONE);
+            binding.swiperefreshlayout1.setVisibility(View.VISIBLE);
+            binding.runningApps.setVisibility(View.VISIBLE);
+            binding.linear1.setVisibility(View.VISIBLE);
+            loadBackgroundApps();
+        } else {
+            binding.permissionDeniedContainer.setVisibility(View.VISIBLE);
+            binding.swiperefreshlayout1.setVisibility(View.GONE);
+            binding.runningApps.setVisibility(View.GONE);
+            binding.linear1.setVisibility(View.GONE);
+            binding.fab.hide();
+            binding.swiperefreshlayout1.setRefreshing(false);
+        }
     }
 
 }

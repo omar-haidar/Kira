@@ -49,6 +49,11 @@ public class ShellManager {
         };
     }
 
+    private String getPermissionMode() {
+        return context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+                .getString("permissionMode", "shizuku");
+    }
+
     /**
      * Set the permission listener for Shizuku, if Shizuku is used.
      */
@@ -96,9 +101,13 @@ public class ShellManager {
     public void checkShellPermissions() {
         if (Shizuku.pingBinder()) {
             if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
-                Shizuku.requestPermission(0); // Request Shizuku permission if not granted
+                if ("shizuku".equals(getPermissionMode())) {
+                    Shizuku.requestPermission(0); // Request Shizuku permission if not granted
+                }
             } else {
-                bindShizukuService();
+                if ("shizuku".equals(getPermissionMode())) {
+                    bindShizukuService();
+                }
             }
         }
     }
@@ -107,7 +116,11 @@ public class ShellManager {
      * Check if any shell permission (Root or Shizuku) is available.
      */
     public boolean hasAnyShellPermission() {
-        return hasRootAccess() || hasShizukuPermission();
+        String mode = getPermissionMode();
+        if ("shizuku".equals(mode)) {
+            return hasShizukuPermission();
+        }
+        return hasRootAccess();
     }
 
     public void bindShizukuService() {
@@ -137,12 +150,12 @@ public class ShellManager {
     public void runShellCommand(String command, Runnable onSuccess) {
         executor.execute(() -> {
             boolean executed = false;
-            if (hasRootAccess()) {
+            if ("root".equals(getPermissionMode()) && hasRootAccess()) {
                 if (executeRootCommand(command, onSuccess, null)) {
                     executed = true;
                 }
             }
-            if (!executed && hasShizukuPermission()) {
+            if (!executed && "shizuku".equals(getPermissionMode()) && hasShizukuPermission()) {
                 if (executeShizukuCommand(command, onSuccess)) {
                     executed = true;
                 }
@@ -163,12 +176,12 @@ public class ShellManager {
     public void runShellCommandWithOutput(String command, Consumer<String> outputProcessor) {
         executor.execute(() -> {
             boolean executed = false;
-            if (hasRootAccess()) {
+            if ("root".equals(getPermissionMode()) && hasRootAccess()) {
                 if (executeRootCommand(command, null, outputProcessor)) {
                     executed = true;
                 }
             }
-            if (!executed && hasShizukuPermission()) {
+            if (!executed && "shizuku".equals(getPermissionMode()) && hasShizukuPermission()) {
                 if (executeShizukuCommandWithOutput(command, outputProcessor)) {
                     executed = true;
                 }
@@ -182,9 +195,9 @@ public class ShellManager {
      * Returns null if no permissions or an error occurs.
      */
     public String runShellCommandAndGetFullOutput(String command) {
-        if (hasRootAccess()) {
+        if ("root".equals(getPermissionMode()) && hasRootAccess()) {
             return executeRootCommandAndGetFullOutput(command);
-        } else if (hasShizukuPermission()) {
+        } else if ("shizuku".equals(getPermissionMode()) && hasShizukuPermission()) {
             return executeShizukuCommandAndGetFullOutput(command);
         } else {
             return null;

@@ -26,6 +26,25 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <FrameLayout
+            android:id="@+id/permission_denied_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/permission_denied_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/permission_denied"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="16sp"
+                android:alpha="0.6"
+                android:gravity="center"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
         <TextView
             android:id="@+id/running_apps"
             android:layout_width="match_parent"
