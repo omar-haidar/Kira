@@ -6,3 +6,4 @@
 - Added a Settings screen.
 - Added a Full screen toggle in Settings.
 - Added a theme selector in Settings and added white/black themes.
+- Added a Dynamic colors toggle in Settings.

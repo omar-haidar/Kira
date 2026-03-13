@@ -10,14 +10,13 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorSurface"
             app:popupTheme="?attr/popupTheme" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -57,6 +56,9 @@
                 android:id="@+id/ram_usage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:progressTint="?attr/colorPrimary"
+                android:progressBackgroundTint="?attr/colorSurface"
+                android:indeterminateTint="?attr/colorPrimary"
                 android:indeterminate="false"
                 style="?android:progressBarStyleHorizontal" />
         </LinearLayout>
@@ -64,13 +66,14 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiperefreshlayout1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/colorSurface">
+            android:layout_height="match_parent"
+            android:background="?attr/colorSurface">
 
             <ListView
                 android:id="@+id/listview1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="?attr/colorSurface"
                 android:choiceMode="none" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>

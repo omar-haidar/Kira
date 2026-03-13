@@ -17,4 +17,6 @@
 	<string name="theme">Theme</string>
 	<string name="theme_summary">Choose Dark, White, or Black</string>
 	<string name="theme_dialog_title">Choose theme</string>
+	<string name="dynamic_colors">Dynamic colors</string>
+	<string name="dynamic_colors_summary">Use Material You colors (Android 12+)</string>
 </resources>

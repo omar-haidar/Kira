@@ -52,6 +52,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import rikka.shizuku.Shizuku;
+import com.google.android.material.color.DynamicColors;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_SHOW_PERSISTENT_APPS = "showPersistentApps";
     private static final String KEY_FULL_SCREEN = "fullScreen";
     private static final String KEY_THEME = "appTheme";
+    private static final String KEY_DYNAMIC_COLORS = "dynamicColors";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private ShellManager shellManager; 
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem unselectAllItem;
     private int baseToolbarHeight = -1;
     private String currentTheme = "dark";
+    private boolean currentDynamicColors = false;
     
     // Handle Shizuku permission results
     private final Shizuku.OnRequestPermissionResultListener shizukuPermissionListener = (requestCode, grantResult) -> {
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         applyThemeFromPreferences();
+        applyDynamicColorsFromPreferences();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -99,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup toolbar
         setSupportActionBar(binding.toolbar);
-        binding.toolbar.setTitleTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnPrimary));
-        getWindow().getDecorView().setBackgroundColor(resolveThemeColor(com.google.android.material.R.attr.colorPrimary));
+        binding.toolbar.setTitleTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurface));
+        getWindow().getDecorView().setBackgroundColor(resolveThemeColor(com.google.android.material.R.attr.colorSurface));
 
         // Initialize components
         shellManager = new ShellManager(this, handler, executor);
@@ -115,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize SharedPreferences
         sharedpreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         currentTheme = sharedpreferences.getString(KEY_THEME, "dark");
+        currentDynamicColors = sharedpreferences.getBoolean(KEY_DYNAMIC_COLORS, false);
        boolean showSystemApps = sharedpreferences.getBoolean(KEY_SHOW_SYSTEM_APPS, false);
        boolean showPersistentApps = sharedpreferences.getBoolean(KEY_SHOW_PERSISTENT_APPS, false);
         appManager.setShowSystemApps(showSystemApps);
@@ -207,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         Drawable overflow = binding.toolbar.getOverflowIcon();
         if (overflow != null) {
-            DrawableCompat.setTint(overflow, resolveThemeColor(com.google.android.material.R.attr.colorOnPrimary));
+            DrawableCompat.setTint(overflow, resolveThemeColor(R.attr.toolbarIconColor));
         }
         MenuItem showSystemItem = menu.findItem(R.id.action_show_system);
         if (showSystemItem != null) {
@@ -302,7 +307,12 @@ public class MainActivity extends AppCompatActivity {
                 .setView(dialogView);
 
         AlertDialog filterDialog = builder.create();
-        filterDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#17181C")));
+        int dialogBg = resolveThemeColor(com.google.android.material.R.attr.colorSurface);
+        String theme = sharedpreferences.getString(KEY_THEME, "dark");
+        if ("black".equals(theme)) {
+            dialogBg = ContextCompat.getColor(this, R.color.theme_black_dialog_surface);
+        }
+        filterDialog.getWindow().setBackgroundDrawable(new ColorDrawable(dialogBg));
 
         filterDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> dialog.dismiss());
         filterDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Save", (dialog, which) -> {});
@@ -311,8 +321,9 @@ public class MainActivity extends AppCompatActivity {
         listView.setVisibility(View.GONE);
         filterDialog.show();
 
-        filterDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE);
-        filterDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+        int dialogTextColor = resolveThemeColor(com.google.android.material.R.attr.colorOnSurface);
+        filterDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialogTextColor);
+        filterDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialogTextColor);
 
         appManager.loadAllApps(allApps -> {
             Set<String> hiddenApps = appManager.getHiddenApps();
@@ -328,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
                 appManager.saveHiddenApps(packagesToHide);
                 loadBackgroundApps();
             });
-            filterDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+            filterDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialogTextColor);
         });
     }
     
@@ -355,7 +366,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         String themeNow = sharedpreferences.getString(KEY_THEME, "dark");
-        if (!themeNow.equals(currentTheme)) {
+        boolean dynamicNow = sharedpreferences.getBoolean(KEY_DYNAMIC_COLORS, false);
+        if (!themeNow.equals(currentTheme) || dynamicNow != currentDynamicColors) {
             recreate();
             return;
         }
@@ -364,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void applySystemBars() {
         boolean fullScreen = sharedpreferences.getBoolean(KEY_FULL_SCREEN, false);
-        int systemBarColor = resolveThemeColor(com.google.android.material.R.attr.colorPrimary);
+        int systemBarColor = resolveThemeColor(com.google.android.material.R.attr.colorSurface);
         getWindow().setStatusBarColor(systemBarColor);
         getWindow().setNavigationBarColor(systemBarColor);
 
@@ -385,12 +397,34 @@ public class MainActivity extends AppCompatActivity {
     private void applyThemeFromPreferences() {
         SharedPreferences prefs = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         String theme = prefs.getString(KEY_THEME, "dark");
+        boolean dynamic = prefs.getBoolean(KEY_DYNAMIC_COLORS, false);
+        if (dynamic) {
+            if ("white".equals(theme)) {
+                setTheme(R.style.AppTheme_Dynamic_Light);
+            } else if ("black".equals(theme)) {
+                setTheme(R.style.AppTheme_Dynamic_Black);
+            } else {
+                setTheme(R.style.AppTheme_Dynamic_Dark);
+            }
+            return;
+        }
         if ("white".equals(theme)) {
             setTheme(R.style.AppTheme_Light);
         } else if ("black".equals(theme)) {
             setTheme(R.style.AppTheme_Black);
         } else {
             setTheme(R.style.AppTheme_Dark);
+        }
+    }
+
+    private void applyDynamicColorsFromPreferences() {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        boolean enabled = prefs.getBoolean(KEY_DYNAMIC_COLORS, false);
+        if (enabled) {
+            DynamicColors.applyToActivityIfAvailable(this);
+            if ("black".equals(prefs.getString(KEY_THEME, "dark"))) {
+                getTheme().applyStyle(R.style.AppTheme_Dynamic_Black_Override, true);
+            }
         }
     }
 
@@ -419,4 +453,5 @@ public class MainActivity extends AppCompatActivity {
         });
         ViewCompat.requestApplyInsets(binding.toolbar);
     }
+
 }

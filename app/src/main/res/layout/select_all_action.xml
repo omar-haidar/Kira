@@ -2,12 +2,7 @@
     android:id="@+id/select_all_action"
     android:layout_width="24dp"
     android:layout_height="24dp"
-    android:minWidth="0dp"
-    android:minHeight="0dp"
-    android:maxWidth="24dp"
-    android:maxHeight="24dp"
-    android:background="?attr/selectableItemBackgroundBorderless"
+    android:background="@android:color/transparent"
     android:scaleType="fitCenter"
-    android:tint="?attr/colorOnPrimary"
-    android:src="@drawable/ic_select_all"
-    android:padding="0dp" />
+    android:tint="?attr/toolbarIconColor"
+    android:src="@drawable/ic_select_all" />

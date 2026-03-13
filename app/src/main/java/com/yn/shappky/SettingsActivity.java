@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.Switch;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.util.TypedValue;
+import android.os.Build;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+import com.google.android.material.color.DynamicColors;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -30,6 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String KEY_AUTO_REFRESH = "autoRefresh";
     private static final String KEY_FULL_SCREEN = "fullScreen";
     private static final String KEY_THEME = "appTheme";
+    private static final String KEY_DYNAMIC_COLORS = "dynamicColors";
     private Toolbar settingsToolbar;
     private int baseToolbarHeight = -1;
 
@@ -37,17 +40,21 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         applyThemeFromPreferences();
+        applyDynamicColorsFromPreferences();
         setContentView(R.layout.activity_settings);
 
         // Setup toolbar
         settingsToolbar = findViewById(R.id.settings_toolbar);
         setSupportActionBar(settingsToolbar);
-        settingsToolbar.setTitleTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnPrimary));
+        settingsToolbar.setTitleTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurface));
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Settings");
         }
-        getWindow().getDecorView().setBackgroundColor(resolveThemeColor(com.google.android.material.R.attr.colorPrimary));
+        if (settingsToolbar.getNavigationIcon() != null) {
+            settingsToolbar.getNavigationIcon().setTint(resolveThemeColor(R.attr.toolbarIconColor));
+        }
+        getWindow().getDecorView().setBackgroundColor(resolveThemeColor(com.google.android.material.R.attr.colorSurface));
 
         sharedPreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
 
@@ -59,6 +66,15 @@ public class SettingsActivity extends AppCompatActivity {
             R.id.summary_auto_refresh, R.id.switch_auto_refresh);
         setupSwitchItem(KEY_FULL_SCREEN, R.id.settings_full_screen, R.id.title_full_screen,
             R.id.summary_full_screen, R.id.switch_full_screen);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            setupSwitchItem(KEY_DYNAMIC_COLORS, R.id.settings_dynamic_colors, R.id.title_dynamic_colors,
+                R.id.summary_dynamic_colors, R.id.switch_dynamic_colors);
+        } else {
+            View dynamicRow = findViewById(R.id.settings_dynamic_colors);
+            View dynamicDivider = findViewById(R.id.divider_dynamic_colors);
+            if (dynamicRow != null) dynamicRow.setVisibility(View.GONE);
+            if (dynamicDivider != null) dynamicDivider.setVisibility(View.GONE);
+        }
         setupThemeDialog();
 
         applySystemBars();
@@ -68,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
         View settingItem = findViewById(layoutId);
         if (settingItem == null) return;
 
-        Switch switchView = findViewById(switchId);
+        CompoundButton switchView = findViewById(switchId);
         TextView titleView = findViewById(titleId);
         TextView summaryView = findViewById(summaryId);
 
@@ -79,6 +95,8 @@ public class SettingsActivity extends AppCompatActivity {
                 sharedPreferences.edit().putBoolean(preferenceKey, isChecked).apply();
                 if (KEY_FULL_SCREEN.equals(preferenceKey)) {
                     applySystemBars();
+                } else if (KEY_DYNAMIC_COLORS.equals(preferenceKey)) {
+                    recreate();
                 }
             });
         }
@@ -120,19 +138,30 @@ public class SettingsActivity extends AppCompatActivity {
         settingItem.setOnClickListener(v -> {
             String current = sharedPreferences.getString(KEY_THEME, "dark");
             int checked = getThemeIndex(current);
-            new androidx.appcompat.app.AlertDialog.Builder(this)
+            androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
                     .setTitle(R.string.theme_dialog_title)
-                    .setSingleChoiceItems(options, checked, (dialog, which) -> {
+                    .setSingleChoiceItems(options, checked, (dlg, which) -> {
                         String newTheme = themeFromIndex(which);
                         if (!newTheme.equals(current)) {
                             sharedPreferences.edit().putString(KEY_THEME, newTheme).apply();
                             valueView.setText(options[which]);
                             recreate();
                         }
-                        dialog.dismiss();
+                        dlg.dismiss();
                     })
                     .setNegativeButton("Cancel", null)
-                    .show();
+                    .create();
+            dialog.show();
+            if (dialog.getWindow() != null) {
+                int dialogBg = resolveThemeColor(com.google.android.material.R.attr.colorSurface);
+                String theme = sharedPreferences.getString(KEY_THEME, "dark");
+                if ("black".equals(theme)) {
+                    dialogBg = ContextCompat.getColor(this, R.color.theme_black_dialog_surface);
+                }
+                dialog.getWindow().setBackgroundDrawable(
+                        new android.graphics.drawable.ColorDrawable(dialogBg)
+                );
+            }
         });
     }
 
@@ -167,12 +196,34 @@ public class SettingsActivity extends AppCompatActivity {
     private void applyThemeFromPreferences() {
         SharedPreferences prefs = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         String theme = prefs.getString(KEY_THEME, "dark");
+        boolean dynamic = prefs.getBoolean(KEY_DYNAMIC_COLORS, false);
+        if (dynamic) {
+            if ("white".equals(theme)) {
+                setTheme(R.style.AppTheme_Dynamic_Light);
+            } else if ("black".equals(theme)) {
+                setTheme(R.style.AppTheme_Dynamic_Black);
+            } else {
+                setTheme(R.style.AppTheme_Dynamic_Dark);
+            }
+            return;
+        }
         if ("white".equals(theme)) {
             setTheme(R.style.AppTheme_Light);
         } else if ("black".equals(theme)) {
             setTheme(R.style.AppTheme_Black);
         } else {
             setTheme(R.style.AppTheme_Dark);
+        }
+    }
+
+    private void applyDynamicColorsFromPreferences() {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        boolean enabled = prefs.getBoolean(KEY_DYNAMIC_COLORS, false);
+        if (enabled) {
+            DynamicColors.applyToActivityIfAvailable(this);
+            if ("black".equals(prefs.getString(KEY_THEME, "dark"))) {
+                getTheme().applyStyle(R.style.AppTheme_Dynamic_Black_Override, true);
+            }
         }
     }
 
@@ -184,7 +235,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void applySystemBars() {
         boolean fullScreen = sharedPreferences.getBoolean(KEY_FULL_SCREEN, false);
-        int systemBarColor = resolveThemeColor(com.google.android.material.R.attr.colorPrimary);
+        int systemBarColor = resolveThemeColor(com.google.android.material.R.attr.colorSurface);
         getWindow().setStatusBarColor(systemBarColor);
         getWindow().setNavigationBarColor(systemBarColor);
 
