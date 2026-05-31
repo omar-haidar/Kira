@@ -12,12 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorSurface"
-            app:popupTheme="?attr/popupTheme" />
+            app:popupTheme="@style/ThemeOverlay.Material3.DynamicColors.DayNight"
+             />
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -104,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_gravity="right|bottom"
-        app:backgroundTint="#0136FF"
+        app:backgroundTint="?attr/colorPrimaryContainer"
         app:srcCompat="@drawable/ic_force_stop"
         app:tint="@android:color/white" />
 

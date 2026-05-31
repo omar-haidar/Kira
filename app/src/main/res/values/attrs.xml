@@ -1,3 +1,5 @@
 <resources>
     <attr name="toolbarIconColor" format="color" />
+    <attr name="item_background_normal" format="color" />
+    <attr name="item_background_selected" format="color" />
 </resources>

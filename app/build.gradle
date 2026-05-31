@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace "com.yn.shappky"
+    namespace "dev.omar.kira"
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.yn.shappky"
+        applicationId "dev.omar.kira"
         minSdk 24
         targetSdk 35
         versionCode 5
@@ -34,15 +34,16 @@ android {
         viewBinding true
         aidl true
     }
-    lint {
-        baseline = file("lint-baseline.xml")
-    }
+    
+    
+    
+    
 }
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     // libsu
     implementation("com.github.topjohnwu.libsu:core:6.0.0")
@@ -51,4 +52,6 @@ dependencies {
     // Shizuku Api
     implementation("dev.rikka.shizuku:api:13.1.5")
     implementation("dev.rikka.shizuku:provider:13.1.5")
+    
+    implementation("org.lsposed.hiddenapibypass:hiddenapibypass:6.1")
 }

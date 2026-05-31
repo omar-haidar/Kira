@@ -1,4 +1,26 @@
 <resources>
+
+    <style
+        name="Theme.Kira"
+        parent="Theme.Material3.DynamicColors.DayNight">
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowLightStatusBar">?isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?isLightTheme</item>
+        
+        <item name="toolbarIconColor">@color/theme_dark_on_primary</item>
+        <item name="item_background_selected">?colorPrimary</item>
+        <item name="item_background_normal">?colorSurface</item>
+    </style>
+
+
+
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/control_blue</item>
         <item name="colorPrimaryDark">@color/control_blue</item>

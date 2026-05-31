@@ -1,4 +1,7 @@
 .gradle/
+.cg/
+agent/
+/agent/
 local.properties
 build/
 */build

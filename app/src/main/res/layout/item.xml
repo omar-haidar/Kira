@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:descendantFocusability="blocksDescendants">
+    >
 
     <LinearLayout
         android:id="@+id/linear1"
@@ -14,7 +14,6 @@
         android:layout_height="60dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-                android:background="@drawable/list_item_background"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -41,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:focusable="false" />
 
@@ -51,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="#CCCCCC"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp"
                 android:focusable="false" />
             <TextView
@@ -60,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="#CCCCCC"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp"
                 android:focusable="false" />           
         </LinearLayout>

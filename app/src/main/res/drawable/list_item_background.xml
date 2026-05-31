@@ -3,8 +3,8 @@
     android:color="#33FFFFFF">
     <item>
         <selector>
-            <item android:state_selected="true" android:drawable="@color/list_item_selected_color" />
-            <item android:drawable="@color/list_item_default_color" />
+            <item android:state_selected="true" android:drawable="?attr/item_background_selected" />
+            <item android:drawable="?attr/item_background_normal" />
         </selector>
     </item>
 </ripple>
