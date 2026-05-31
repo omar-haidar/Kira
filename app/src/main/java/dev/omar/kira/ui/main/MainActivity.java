@@ -1,7 +1,7 @@
 package dev.omar.kira.ui.main;
 
 import android.os.Bundle;
-import com.yn.shappky.ui.base.BaseActivity;
+import dev.omar.kira.ui.base.BaseActivity;
 
 public class MainActivity extends BaseActivity {
 

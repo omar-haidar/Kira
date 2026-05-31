@@ -33,16 +33,16 @@ import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.yn.shappky.adapter.BackgroundAppsAdapter;
-import com.yn.shappky.adapter.FilterAppsAdapter;
-import com.yn.shappky.databinding.ActivityMainBinding;
-import com.yn.shappky.model.AppModel;
-import com.yn.shappky.shell.ShellExecutors;
-import com.yn.shappky.shell.ShellResult;
-import com.yn.shappky.ui.base.BaseActivity;
-import com.yn.shappky.util.BackgroundAppManager;
-import com.yn.shappky.util.RamMonitor;
-import com.yn.shappky.util.ShellManager;
+import dev.omar.kira.adapter.BackgroundAppsAdapter;
+import dev.omar.kira.adapter.FilterAppsAdapter;
+import dev.omar.kira.databinding.ActivityMainBinding;
+import dev.omar.kira.model.AppModel;
+import dev.omar.kira.shell.ShellExecutors;
+import dev.omar.kira.shell.ShellResult;
+import dev.omar.kira.ui.base.BaseActivity;
+import dev.omar.kira.util.BackgroundAppManager;
+import dev.omar.kira.util.RamMonitor;
+import dev.omar.kira.util.ShellManager;
 
 import rikka.shizuku.Shizuku;
 

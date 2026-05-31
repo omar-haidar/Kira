@@ -14,9 +14,9 @@ import android.widget.BaseAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.yn.shappky.R;
-import com.yn.shappky.databinding.ItemBinding;
-import com.yn.shappky.model.AppModel;
+import dev.omar.kira.R;
+import dev.omar.kira.databinding.ItemBinding;
+import dev.omar.kira.model.AppModel;
 
 import java.util.List;
 

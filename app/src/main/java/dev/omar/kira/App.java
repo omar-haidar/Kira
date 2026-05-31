@@ -3,7 +3,7 @@ package dev.omar.kira;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
-import com.yn.shappky.ui.base.CrashApp;
+import dev.omar.kira.ui.base.CrashApp;
 import org.lsposed.hiddenapibypass.HiddenApiBypass;
 
 public class App extends CrashApp {

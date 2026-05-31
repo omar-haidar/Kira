@@ -10,9 +10,9 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.widget.Toast;
 
-import com.yn.shappky.model.AppModel;
-import com.yn.shappky.shell.ShellExecutors;
-import com.yn.shappky.util.ShellManager; 
+import dev.omar.kira.model.AppModel;
+import dev.omar.kira.shell.ShellExecutors;
+import dev.omar.kira.util.ShellManager; 
 
 import java.io.BufferedReader;
 import java.io.StringReader;

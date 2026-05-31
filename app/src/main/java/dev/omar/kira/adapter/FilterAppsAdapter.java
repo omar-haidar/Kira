@@ -9,8 +9,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.yn.shappky.R;
-import com.yn.shappky.model.AppModel;
+import dev.omar.kira.R;
+import dev.omar.kira.model.AppModel;
 
 import java.util.Collections;
 import java.util.Comparator;

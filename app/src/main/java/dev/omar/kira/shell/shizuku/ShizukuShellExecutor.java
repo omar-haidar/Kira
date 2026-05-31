@@ -1,7 +1,7 @@
 package dev.omar.kira.shell.shizuku;
 
-import com.yn.shappky.shell.ShellExecutor;
-import com.yn.shappky.shell.ShellResult;
+import dev.omar.kira.shell.ShellExecutor;
+import dev.omar.kira.shell.ShellResult;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;

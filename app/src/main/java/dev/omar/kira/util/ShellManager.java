@@ -9,13 +9,13 @@ import android.os.RemoteException;
 import android.content.ServiceConnection;
 
 import android.widget.Toast;
-import com.yn.shappky.shell.ShellExecutors;
-import com.yn.shappky.shell.ShellResult;
+import dev.omar.kira.shell.ShellExecutors;
+import dev.omar.kira.shell.ShellResult;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import com.yn.shappky.IShizukuShellService;
-import com.yn.shappky.shizuku.ShizukuShellService;
+import dev.omar.kira.IShizukuShellService;
+import dev.omar.kira.shizuku.ShizukuShellService;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.Shell.Result;
 

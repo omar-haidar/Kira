@@ -1,6 +1,6 @@
 package dev.omar.kira.shizuku;
 
-import com.yn.shappky.IShizukuShellService;
+import dev.omar.kira.IShizukuShellService;
 
 import java.io.BufferedReader;
 import java.io.File;

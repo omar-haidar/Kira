@@ -8,7 +8,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import com.yn.shappky.R;
+import dev.omar.kira.R;
 
 // Manages the Quick Settings tile for starting and stopping the Shappky service
 public class ShappkyQuickTile extends TileService {

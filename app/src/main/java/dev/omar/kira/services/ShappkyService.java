@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
-import com.yn.shappky.util.ShellManager;
+import dev.omar.kira.util.ShellManager;
 import android.content.ComponentName;
 import android.service.quicksettings.TileService;
 
@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import com.yn.shappky.R;
+import dev.omar.kira.R;
 
 /**
  * A foreground service that periodically kills background applications

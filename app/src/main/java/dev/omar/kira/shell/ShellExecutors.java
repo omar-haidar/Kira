@@ -1,6 +1,6 @@
 package dev.omar.kira.shell;
 
-import com.yn.shappky.shell.shizuku.ShizukuShellExecutor;
+import dev.omar.kira.shell.shizuku.ShizukuShellExecutor;
 import java.util.concurrent.CompletableFuture;
 
 public final class ShellExecutors {
